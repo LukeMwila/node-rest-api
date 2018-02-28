@@ -2,9 +2,17 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
+const mongoose = ('mongoose')
 
 const productRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
+
+mongoose.connect(
+    'mongodb://nodeshop:'+ process.env.MONGO_ATLAS_PW +'@node-rest-shop-shard-00-00-qomy8.mongodb.net:27017,node-rest-shop-shard-00-01-qomy8.mongodb.net:27017,node-rest-shop-shard-00-02-qomy8.mongodb.net:27017/test?ssl=true&replicaSet=node-rest-shop-shard-0&authSource=admin',
+    {
+        useMongoClient: true
+    }
+)
 
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended: false}))
@@ -14,7 +22,7 @@ app.use((res,req, next) => {
     res.header('Access-Control-Allow-Origin', '*')
     res.header(
         'Access-Control-Allow-Headers', 
-        //'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+        'Origin, X-Requested-With, Content-Type, Accept, Authorization'
     )
     if(req.method === 'OPTIONS'){
         res.header('Access-Control-Allow-Methods', 'PUT', 'POST', 'PATCH', 'DELETE', 'GET')
