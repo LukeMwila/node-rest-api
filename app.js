@@ -8,7 +8,7 @@ const productRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
 
 mongoose.connect(
-    'mongodb://nodeshop:'+ process.env.MONGO_ATLAS_PW +'@node-rest-shop-shard-00-00-qomy8.mongodb.net:27017,node-rest-shop-shard-00-01-qomy8.mongodb.net:27017,node-rest-shop-shard-00-02-qomy8.mongodb.net:27017/test?ssl=true&replicaSet=node-rest-shop-shard-0&authSource=admin',
+    'mongodb connection string goes here',
     {
         useMongoClient: true
     }
