@@ -1,5 +1,5 @@
 {
     "env": {
-        "MONGO_ATLAS_PW": "nodemon"
+        "MONGO_ATLAS_PW": "nodeshop"
     }
 }
