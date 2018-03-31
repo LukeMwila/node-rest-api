@@ -87,7 +87,7 @@ router.get('/', (req, res, next) => {
 /**
  * Handling POST requests
  */
-router.post('/', (req, res, next) => {
+router.post('/', checkAuth, (req, res, next) => {
     uploadToS3(req.files.productImage)
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
