@@ -1,4 +1,7 @@
 const express = require('express')
+const busboy = require('connect-busboy')
+const busboyBodyParser = require('busboy-body-parser')
+
 const app = express()
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
@@ -18,6 +21,8 @@ app.use(morgan('dev'))
 app.use('/uploads', express.static('uploads'))
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
+app.use(busboy())
+app.use(busboyBodyParser())
 
 app.use((res,req, next) => {
     res.header('Access-Control-Allow-Origin', '*')

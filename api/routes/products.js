@@ -4,13 +4,44 @@ const mongoose = require('mongoose')
 const Product = require('../models/products')
 const multer = require('multer')
 const checkAuth = require('../middleware/check-auth')
+const config = require('../config/config')
+
+const AWS = require('aws-sdk');
+const Busboy = require('busboy');
+
+const BUCKET_NAME = 'node-amazon-s3';
+const IAM_USER_KEY = config.iamUser;
+const IAM_USER_SECRET = config.iamSecret;
+
+function uploadToS3(file) {
+  let s3bucket = new AWS.S3({
+    accessKeyId: IAM_USER_KEY,
+    secretAccessKey: IAM_USER_SECRET,
+    Bucket: BUCKET_NAME
+  });
+  s3bucket.createBucket(function () {
+      var params = {
+        Bucket: BUCKET_NAME,
+        Key: file.name,
+        Body: file.data
+      };
+      s3bucket.upload(params, function (err, data) {
+        if (err) {
+          console.log('error in callback');
+          console.log(err);
+        }
+        console.log('success');
+        console.log(data);
+      });
+  });
+}
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
         cb(null, './uploads/')
     },
     filename: function(req, file, cb){
-        cb(null, new Date().toISOString() + file.originalname)
+        cb(null, file.originalname)
     }
 })
 
@@ -56,12 +87,13 @@ router.get('/', (req, res, next) => {
 /**
  * Handling POST requests
  */
-router.post('/', checkAuth, upload.single('productImage'), (req, res, next) => {
+router.post('/', (req, res, next) => {
+    uploadToS3(req.files.productImage)
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         price: req.body.price,
-        productImage: req.file.path
+        productImage: req.files.productImage.name
     })
     product
     .save()
